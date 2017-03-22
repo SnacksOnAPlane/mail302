@@ -1,0 +1,28 @@
+{
+  "name": "mail302",
+  "version": "1.0.0",
+  "description": "An email forwarding service",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SnacksOnAPlane/mail302.git"
+  },
+  "keywords": [
+    "email",
+    "forwarding"
+  ],
+  "author": "Richard Smiley",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SnacksOnAPlane/mail302/issues"
+  },
+  "homepage": "https://github.com/SnacksOnAPlane/mail302#readme",
+  "dependencies": {
+    "aws-lambda-ses-forwarder": "^4.1.0",
+    "aws-sdk": "^2.30.0",
+    "serverless": "^1.9.0"
+  }
+}
