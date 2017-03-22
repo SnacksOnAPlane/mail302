@@ -23,6 +23,7 @@
   "dependencies": {
     "aws-lambda-ses-forwarder": "^4.1.0",
     "aws-sdk": "^2.30.0",
-    "serverless": "^1.9.0"
+    "serverless": "^1.9.0",
+    "terminal-menu": "^2.1.1"
   }
 }
