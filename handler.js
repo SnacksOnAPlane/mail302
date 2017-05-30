@@ -3,7 +3,7 @@
 var sesForwarder = require('aws-lambda-ses-forwarder')
 
 
-module.exports.sesForwarder = function (evt, ctx) {
+module.exports.sesForwarder = function (evt, ctx, callback) {
   // Configure the S3 bucket and key prefix for stored raw emails, and the
   // mapping of email addresses to forward from and to.
   //
@@ -15,6 +15,7 @@ module.exports.sesForwarder = function (evt, ctx) {
   // - forwardMapping: Object where the key is the email address from which to
   //   forward and the value is an array of email addresses to which to send the
   //   message.
+  console.log(evt, ctx);
   var aws = require('aws-sdk');
   var s3 = new aws.S3();
   var params = { Bucket: 'mail.hotdonuts.info', Key: 'mailmap.json' };
@@ -23,11 +24,14 @@ module.exports.sesForwarder = function (evt, ctx) {
       console.log("error");
       return;
     }
-    var file_data = JSON.parse(data.Body);
+    console.log(data);
+    var file_data = JSON.parse(data.Body.toString('utf-8'));
+    console.log(file_data);
     var mappings = {};
     Object.keys(file_data).forEach(function(key, idx) {
       mappings[key] = [ file_data[key] ];
     });
+    console.log(mappings);
 
     var overrides = {
       config: {
@@ -37,6 +41,7 @@ module.exports.sesForwarder = function (evt, ctx) {
         forwardMapping: mappings
       }
     };
-    sesForwarder.handler(evt, ctx, overrides);
+    console.log("about to override with:", overrides);
+    sesForwarder.handler(evt, ctx, callback, overrides);
   });
 }
