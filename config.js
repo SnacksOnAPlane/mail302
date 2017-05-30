@@ -82,8 +82,32 @@ function checkRoute53(domain) {
   });
 }
 
+function deleteSetup() {
+  var iam = new aws.IAM({apiVersion: '2010-05-08'});
+  var params = {
+    RoleName: 'mail302',
+    PolicyName: 'mail302-policy'
+  };
+  iam.deleteRolePolicy(params, function(err, data) {
+    if (err) {
+      debugger;
+      return;
+    }
+    var params = {
+      RoleName: 'mail302'
+    };
+    iam.deleteRole(params, function(err, data) {
+      if (err) {
+        debugger;
+        return;
+      }
+    });
+  });
+};
+
 //uploadS3File();
 //checkRoute53('hotdonuts.info');
+deleteSetup();
 setupIAMRoles();
 
 function showMenu() {
