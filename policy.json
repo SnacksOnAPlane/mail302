@@ -13,6 +13,13 @@
            "s3:PutObject"
         ],
         "Resource": "arn:aws:s3:::mail.hotdonuts.info/*"
+     },
+     {
+        "Effect": "Allow",
+        "Action": [
+            "logs:*"
+        ],
+        "Resource": "arn:aws:logs:*:*:*"
      }
     ]
 }

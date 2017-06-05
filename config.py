@@ -100,6 +100,7 @@ def createSESReceiptRule(lambda_arn):
         ]
       }
     )
+  ses.set_active_receipt_rule_set(RuleSetName = 'mail302-set')
 
 def findForwarderLambda():
   funcs = lam.list_functions()['Functions']
@@ -108,13 +109,19 @@ def findForwarderLambda():
       return func
 
 def zipFile():
+  dir_path = os.path.dirname(os.path.realpath(__file__))
+  handler_dir = os.path.join(dir_path, "handler")
+  cwdpath = os.getcwd()
+  os.chdir(handler_dir)
   fl_obj = StringIO.StringIO()
   with zipfile.ZipFile(fl_obj, mode="w", compression = zipfile.ZIP_DEFLATED) as zf:
-    for dirname, subdirs, files in os.walk("handler"):
+    for dirname, subdirs, files in os.walk("./"):
       zf.write(dirname)
       for filename in files:
         zf.write(os.path.join(dirname, filename))
-  return fl_obj.getvalue()
+  val = fl_obj.getvalue()
+  os.chdir(cwdpath)
+  return val
 
 def createForwarderLambda(role_arn):
   print "Creating Lambda function..."
