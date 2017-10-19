@@ -35,7 +35,6 @@ module.exports.sesForwarder = function (evt, ctx, callback) {
 
     var overrides = {
       config: {
-        fromEmail: "rsmiley@hotdonuts.info",
         emailBucket: "mail.hotdonuts.info",
         emailKeyPrefix: "",
         forwardMapping: mappings

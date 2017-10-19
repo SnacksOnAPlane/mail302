@@ -22,11 +22,22 @@ iam = boto3.client('iam')
 ses = boto3.client('ses')
 lam = boto3.client('lambda')
 
-def loadAddresses():
+def loadAddressesFromServer():
   global mappings
   object = s3.Object('mail.hotdonuts.info', 'mailmap.json')
-  mappings = json.loads(object.get()['Body'].read())
-  pdb.set_trace()
+  raw = object.get()['Body'].read()
+  mappings = json.loads(raw)
+
+def loadAddressesFromFile():
+  global mappings
+  with open(MAPPING_FILE_NAME) as data_file:
+    mappings = json.load(data_file)
+
+def putAddresses():
+  global mappings
+  object = s3.Object('mail.hotdonuts.info', 'mailmap.json')
+  data = json.dumps(mappings)
+  object.put(Body=data)
 
 def createIAMRole():
   print "Creating IAM roles..."
@@ -76,7 +87,12 @@ def uploadS3Config():
   s3.put_object(params)
 
 def domainsList():
-  return ['hotdonuts.info']
+  global mappings
+  domains = set()
+  for recipient in mappings:
+    user, domain = recipient.split("@")
+    domains.add(domain)
+  return list(domains)
 
 def createSESReceiptRule(lambda_arn):
   print "Creating SES Receipt rule..."
@@ -146,6 +162,7 @@ def createForwarderLambda(role_arn):
 
 #deleteSetup()
 #createIAMRole()
+loadAddressesFromFile()
 role = findIAMRole()
 if not role:
   role = createIAMRole()['Role']
@@ -153,6 +170,7 @@ forwarder = findForwarderLambda()
 if not forwarder:
   forwarder = createForwarderLambda(role["Arn"])
 createSESReceiptRule(forwarder['FunctionArn'])
+
 
 """
 
